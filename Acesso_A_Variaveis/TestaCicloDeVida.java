@@ -4,6 +4,13 @@ class Carros {
     Carro c2;
 }
 public class TestaCicloDeVida {
+    public static void obterMemoriaUsada() {
+        final int MB = 1024 * 1024;
+
+        Runtime runtime = Runtime.getRuntime();
+
+        System.out.println((runtime.totalMemory() - runtime.freeMemory()) / MB);
+    }
     public static void main(String[] args) {
         Carro c = new Carro();
         Carros carros = new Carros();
@@ -13,25 +20,29 @@ public class TestaCicloDeVida {
         //enquanto tenho uma referência a um objeto na memória, esse objeto (carro) se torna acessível
         carros.c1 = c;
         //nesse caso, temos uma referência indireta e por isso não podem ser deletados da memória porque c1 depende de c.
-
+        obterMemoriaUsada();
         c = new Carro(); //nova referência, o outro perdeu a referência
         //o antigo objeto referenciado anteriormente passa a ser inacessível e esse é um novo objeto
         c.modelo = "Gol";
         c.ano = 2010;
         carros.c2 = c;
-
+        obterMemoriaUsada();
         c = null; //nesse momento, temos 2 objetos inacessíveis
-
+        obterMemoriaUsada();
         if(15 > 10) {
             Carro c2 = new Carro();
             c2.ano = 2018;
             //nesse caso, a variável que referencia o objeto carro (c2) é uma variável local e, portanto:
             //torna o objeto acessível somente no bloco em que ele é referenciado. Nesse caso, o if.
         }
+        obterMemoriaUsada();
         Carro c3;
         for (int i = 0; i < 10; i++) {
             c3 = new Carro();
         }
+        //Runtime.getRuntime().runFinalization();
+        Runtime.getRuntime().gc();
+        obterMemoriaUsada();
         //Nesse caso, a variável de referência (c3) é criada antes do bloco for e por isso, quando o loop é finalizado
         //c3 guarda somente a última referência, ou seja, o décimo carro.
         //portanto nesse momento, tem um único objeto acessível.
